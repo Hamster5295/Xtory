@@ -7,7 +7,7 @@ namespace Xtory
         Story Get(string file);
     }
 
-    public abstract class FileProvider
+    public abstract class ContentProvider : IContentProvider
     {
         private readonly Dictionary<string, Story> cache = new();
 
