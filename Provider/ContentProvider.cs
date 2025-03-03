@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Xtory
 {
-    public interface IFileProvider
+    public interface IContentProvider
     {
         Story Get(string file);
     }

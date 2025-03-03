@@ -11,7 +11,7 @@ namespace Xtory
 
         private readonly IDialogProvider dialog;
         private readonly IDataProvider data;
-        private readonly IFileProvider file;
+        private readonly IContentProvider contents;
 
         private Story story;
         private int line;
@@ -21,18 +21,21 @@ namespace Xtory
         private bool blocked = false;
         private readonly Stack<(Story, int)> callbackStack;
 
-        public Runner(IDialogProvider dialog, IDataProvider data, IFileProvider file)
+        public Runner(IDialogProvider dialog, IDataProvider data, IContentProvider contents = null)
         {
             this.dialog = dialog;
             this.data = data;
-            this.file = file;
+            this.contents = contents;
 
             pendingOps = new();
             callbackStack = new();
         }
 
-        public void Run(string file, string tag)
-            => Run(this.file.Get(file), tag);
+        public void Run(string name, string tag)
+        {
+            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
+            Run(contents.Get(name), tag);
+        }
 
         public void Run(Story story, string tag)
         {
@@ -40,7 +43,12 @@ namespace Xtory
             Run(story, line);
         }
 
-        public void Run(string file) => Run(this.file.Get(file), 0);
+        public void Run(string name)
+        {
+            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
+            Run(contents.Get(name), 0);
+        }
+
         public void Run(Story story) => Run(story, 0);
 
         public void Run(Story story, int line)
@@ -97,7 +105,12 @@ namespace Xtory
             Ended?.Invoke(ret);
         }
 
-        private void Seek(string file, string tag) => Seek(this.file.Get(file), tag);
+        private void Seek(string name, string tag)
+        {
+            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
+            Seek(contents.Get(name), tag);
+        }
+
         private void Seek(Story story, string tag)
         {
             this.story = story;
@@ -117,6 +130,7 @@ namespace Xtory
 
         private void Call(string file, string tag)
         {
+            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
             Push();
             Seek(file, tag);
         }
@@ -154,19 +168,19 @@ namespace Xtory
             }
 
             public void Jump(string tag) => runner.Seek(tag);
-            public void Jump(string file, string tag) => runner.Seek(file, tag);
+            public void Jump(string name, string tag) => runner.Seek(name, tag);
             public void Jump(Location location)
             {
-                if (location.file == null) runner.Seek(location.tag);
-                else runner.Seek(location.file, location.tag);
+                if (location.name == null) runner.Seek(location.tag);
+                else runner.Seek(location.name, location.tag);
             }
 
             public void Call(string tag) => runner.Call(tag);
             public void Call(string file, string tag) => runner.Call(file, tag);
             public void Call(Location location)
             {
-                if (location.file == null) runner.Call(location.tag);
-                else runner.Call(location.file, location.tag);
+                if (location.name == null) runner.Call(location.tag);
+                else runner.Call(location.name, location.tag);
             }
 
             public void Return() => runner.Pop();
@@ -180,17 +194,17 @@ namespace Xtory
     {
         public const char SEP = ':';
 
-        internal readonly string file, tag;
+        internal readonly string name, tag;
 
         public Location(string tag)
         {
-            file = null;
+            name = null;
             this.tag = tag;
         }
 
-        public Location(string file, string tag)
+        public Location(string name, string tag)
         {
-            this.file = file;
+            this.name = name;
             this.tag = tag;
         }
     }
