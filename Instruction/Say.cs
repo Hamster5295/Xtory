@@ -11,7 +11,7 @@ namespace Xtory.Instructions
             content = args.Str();
         }
 
-        public override void Execute(Runner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
         {
             dialog.ShowCharacter(character);
             dialog.ShowText(data.Format(content), s => handle.Complete());

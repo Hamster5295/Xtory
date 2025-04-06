@@ -11,7 +11,7 @@ namespace Xtory.Instructions
             value = args.StrOrEmpty();
         }
 
-        public override void Execute(Runner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
         {
             DataUtils.CastString(value, out var result);
             data.Set(key, result);

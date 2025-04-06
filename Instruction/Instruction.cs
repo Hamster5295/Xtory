@@ -5,7 +5,7 @@ namespace Xtory
     public abstract class Instruction
     {
         public Instruction(Arguments args) { }
-        public abstract void Execute(Runner.Handle handle, IDialogProvider dialog, IDataProvider data);
+        public abstract void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data);
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]

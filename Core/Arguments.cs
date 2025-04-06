@@ -108,23 +108,6 @@ namespace Xtory
 
         public string StrOrEmpty() => StrOr(string.Empty);
 
-        public Location Loc()
-        {
-            var (arg, index) = Next();
-            arg = arg.Trim();
-
-            if (arg.Length == 0)
-                throw new InstructionParseException(index, "参数应为跳转位置，实际无任何内容");
-
-            if (!arg.Contains(Location.SEP)) return new(arg);
-
-            var locs = arg.Split(Location.SEP);
-            if (locs.Length > 2) throw new InstructionParseException(index, $"位置 {arg} 应当最多只有一个 '{Location.SEP}' 分隔符");
-            if ((locs[0] = locs[0].Trim()).Length == 0) throw new InstructionParseException(index, $"位置 {arg} 在 '{Location.SEP}' 前应指定不为空的文件");
-            if ((locs[1] = locs[1].Trim()).Length == 0) throw new InstructionParseException(index, $"位置 {arg} 在 '{Location.SEP}' 后应指定不为空的标签");
-            return new(locs[0], locs[1]);
-        }
-
         public T Enum<T>() where T : Enum
         {
             var (arg, index) = Next();

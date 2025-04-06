@@ -7,14 +7,14 @@ namespace Xtory.Instructions
     public class If : Instruction
     {
         private readonly List<HashSet<Condition>> conditions;
-        private readonly Location target;
+        private readonly string target;
 
         public If(Arguments args) : base(args)
         {
             conditions = new();
             int idx = 0;
 
-            target = args.Loc();
+            target = args.Str();
 
             do
             {
@@ -33,7 +33,7 @@ namespace Xtory.Instructions
             } while (true);
         }
 
-        public override void Execute(Runner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
         {
             var cond = false;
             foreach (var orBlock in conditions)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Xtory
 {
-    public class Runner
+    public class XtoryRunner
     {
         public event Action<string> Ended;
 
@@ -11,7 +11,6 @@ namespace Xtory
 
         private readonly IDialogProvider dialog;
         private readonly IDataProvider data;
-        private readonly IContentProvider contents;
 
         private Story story;
         private int line;
@@ -21,32 +20,19 @@ namespace Xtory
         private bool blocked = false;
         private readonly Stack<(Story, int)> callbackStack;
 
-        public Runner(IDialogProvider dialog, IDataProvider data, IContentProvider contents = null)
+        public XtoryRunner(IDialogProvider dialog, IDataProvider data)
         {
             this.dialog = dialog;
             this.data = data;
-            this.contents = contents;
 
             pendingOps = new();
             callbackStack = new();
-        }
-
-        public void Run(string name, string tag)
-        {
-            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
-            Run(contents.Get(name), tag);
         }
 
         public void Run(Story story, string tag)
         {
             if (!story.TryGetLine(tag, out var line)) throw new InvalidTagException(story, tag);
             Run(story, line);
-        }
-
-        public void Run(string name)
-        {
-            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
-            Run(contents.Get(name), 0);
         }
 
         public void Run(Story story) => Run(story, 0);
@@ -105,12 +91,6 @@ namespace Xtory
             Ended?.Invoke(ret);
         }
 
-        private void Seek(string name, string tag)
-        {
-            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
-            Seek(contents.Get(name), tag);
-        }
-
         private void Seek(Story story, string tag)
         {
             this.story = story;
@@ -126,13 +106,6 @@ namespace Xtory
         private void Seek(int line)
         {
             this.line = line;
-        }
-
-        private void Call(string file, string tag)
-        {
-            if (contents == null) throw new InvalidOperationException("未提供 IContentProvider 实现，无法通过名称 {name} 找到对话文本");
-            Push();
-            Seek(file, tag);
         }
 
         private void Call(string tag)
@@ -158,54 +131,22 @@ namespace Xtory
 
         public readonly struct Handle
         {
-            private readonly Runner runner;
+            private readonly XtoryRunner runner;
             private readonly long opId;
 
-            public Handle(Runner runner, long opId)
+            public Handle(XtoryRunner runner, long opId)
             {
                 this.runner = runner;
                 this.opId = opId;
             }
 
             public void Jump(string tag) => runner.Seek(tag);
-            public void Jump(string name, string tag) => runner.Seek(name, tag);
-            public void Jump(Location location)
-            {
-                if (location.name == null) runner.Seek(location.tag);
-                else runner.Seek(location.name, location.tag);
-            }
-
             public void Call(string tag) => runner.Call(tag);
-            public void Call(string file, string tag) => runner.Call(file, tag);
-            public void Call(Location location)
-            {
-                if (location.name == null) runner.Call(location.tag);
-                else runner.Call(location.name, location.tag);
-            }
 
             public void Return() => runner.Pop();
             public void Stop() => runner.Stop();
             public void Stop(string ret) => runner.Stop(ret);
             public void Complete() => runner.CompleteOperation(opId);
-        }
-    }
-
-    public readonly struct Location
-    {
-        public const char SEP = ':';
-
-        internal readonly string name, tag;
-
-        public Location(string tag)
-        {
-            name = null;
-            this.tag = tag;
-        }
-
-        public Location(string name, string tag)
-        {
-            this.name = name;
-            this.tag = tag;
         }
     }
 }

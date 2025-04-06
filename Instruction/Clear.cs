@@ -5,7 +5,7 @@ namespace Xtory.Instructions
     {
         public Clear(Arguments args) : base(args) { }
 
-        public override void Execute(Runner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
         {
             dialog.ShowText(string.Empty);
             dialog.ClearMenu(s => handle.Complete());
