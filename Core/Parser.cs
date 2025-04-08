@@ -81,6 +81,7 @@ namespace Xtory
                                 line.Add(buf.ToString());
                                 var args = line.ToArray();
                                 line.Clear();
+                                buf.Clear();
 
                                 if (args.Length < 4) continue;
                                 if (args.Select(i => i.Trim()).All(i => i.Length == 0)) continue;
@@ -88,14 +89,15 @@ namespace Xtory
                                 // 第一列，有内容则禁用
                                 if (args[0].Trim().Length > 0) continue;
 
-                                // 第二列建立 Tag 表
-                                var tag = args[1].Trim();
+                                // 第二列，执行模式
+                                var modeTxt = args[1].Trim().ToLower();
+
+                                // 第三列建立 Tag 表
+                                var tag = args[2].Trim();
                                 if (tag.Length > 0)
                                     if (!tagMap.TryAdd(tag, insts.Count))
-                                        diags.Add(new(currentLine, 1, $"标签 {tag} 已存在，请检查标签一列！"));
-
-                                // 第三列，执行模式
-                                var modeTxt = args[2].Trim().ToLower();
+                                        diags.Add(new(currentLine, 2, $"标签 {tag} 已存在，请检查标签一列！"));
+                                
 
                                 // 第四列，指令
                                 if (TryParseInstruction(modeTxt, args[3..], out var inst, out var mode, out var diagnosis))
