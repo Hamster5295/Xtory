@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xtory
 {
@@ -51,5 +52,7 @@ namespace Xtory
 
         internal bool Has(string tag) => tagMap.ContainsKey(tag);
         internal bool Has(int line) => line < insts.Count;
+
+        public List<string> GetTags() => tagMap.Keys.ToList();
     }
 }
