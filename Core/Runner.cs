@@ -31,8 +31,9 @@ namespace Xtory
 
         public void Run(Story story, string tag)
         {
-            if (!story.TryGetLine(tag, out var line)) throw new InvalidTagException(story, tag);
-            Run(story, line);
+            if (tag == null || tag.Length == 0) Run(story);
+            else if (story.TryGetLine(tag, out var l)) Run(story, l);
+            else throw new InvalidTagException(story, tag);
         }
 
         public void Run(Story story) => Run(story, 0);
@@ -89,12 +90,6 @@ namespace Xtory
         {
             Running = false;
             Ended?.Invoke(ret);
-        }
-
-        private void Seek(Story story, string tag)
-        {
-            this.story = story;
-            Seek(tag);
         }
 
         private void Seek(string tag)
