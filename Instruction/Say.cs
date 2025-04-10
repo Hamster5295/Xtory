@@ -30,6 +30,7 @@ namespace Xtory.Instructions
 
         public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
         {
+            dialog.ShowCharacter("");
             dialog.ShowText(data.Format(content), s => handle.Complete());
         }
     }

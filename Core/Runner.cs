@@ -81,7 +81,7 @@ namespace Xtory
             }
             catch (Exception e)
             {
-                throw new InstructionExecException(currentLine, $"执行第 {currentLine + 1} 个指令时出错: \n{e.Message}\n{e.StackTrace}");
+                throw new InstructionExecException(currentLine, $"执行第 {currentLine + 1} 个指令 {inst.GetType()} 时出错: \n{e.Message}\n{e.StackTrace}");
             }
         }
 
@@ -107,6 +107,11 @@ namespace Xtory
         {
             Push();
             Seek(tag);
+        }
+
+        private void Halt()
+        {
+            line--;
         }
 
         private void Push() => callbackStack.Push((story, line));
@@ -137,6 +142,7 @@ namespace Xtory
 
             public void Jump(string tag) => runner.Seek(tag);
             public void Call(string tag) => runner.Call(tag);
+            public void Halt() => runner.Halt();
 
             public void Return() => runner.Pop();
             public void Stop() => runner.Stop();

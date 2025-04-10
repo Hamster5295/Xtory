@@ -55,7 +55,7 @@ namespace Xtory
 
             var lineIdx = 0;
             var line = new List<string>();
-            var buf = new StringBuilder();
+            var buf = new StringBuilder(256);
 
             var state = ParseState.Idle;
 
