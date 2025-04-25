@@ -63,7 +63,7 @@ namespace Xtory
 
         private void Execute()
         {
-            if (!story.TryGetInst(line, out var inst, out var mode)) Stop();
+            if (!story.TryGetInst(line, out var inst, out var mode)) { Stop(); return; }
             var currentLine = line++;
 
             if (mode == ExecuteMode.Parallel)
