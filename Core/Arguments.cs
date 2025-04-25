@@ -97,7 +97,7 @@ namespace Xtory
 
             if (arg.Length == 0)
                 throw new InstructionParseException(index, $"参数应为字符串，实际无任何内容");
-            return arg;
+            return arg.Trim('\r');
         }
 
         public string StrOr(string value)
