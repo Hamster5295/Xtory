@@ -55,18 +55,18 @@ namespace Xtory
                 tb = DataUtils.GetObjectType(b);
             }
             else tb = DataUtils.CastString(opB, out b);
-            
+
             if (ta == DataType.Other) throw new InvalidCastException($"变量 {opA} 的类型为 {ta}，应为 Int, Float, Bool, String 中的一个");
             if (tb == DataType.Other) throw new InvalidCastException($"变量 {opB} 的类型为 {tb}，应为 Int, Float, Bool, String 中的一个");
 
             if (!DataUtils.GetCompareType(ta, tb, out var t)) throw new InvalidOperationException($"无法将类型为 {ta} 的变量 {opA} 与 类型为 {tb} 的变量 {opB} 进行比较");
-            if (cmp != Comparer.Equal && cmp != Comparer.NotEqual && t != DataType.Int && t != DataType.Float)
+            if (cmp != Comparer.Equal && cmp != Comparer.Unequal && t != DataType.Int && t != DataType.Float)
                 throw new InvalidOperationException($"类型为 {t} 的比较式的变量无法比较大小，仅能判断等于/不等于");
 
             return cmp switch
             {
-                Comparer.Equal => opA == opB,
-                Comparer.NotEqual => opA != opB,
+                Comparer.Equal => a.Equals(b),
+                Comparer.Unequal => !a.Equals(b),
                 Comparer.Less => (a as IComparable).CompareTo(b) < 0,
                 Comparer.LessEqual => (a as IComparable).CompareTo(b) <= 0,
                 Comparer.Greater => (a as IComparable).CompareTo(b) > 0,
@@ -78,10 +78,10 @@ namespace Xtory
 
     public enum Comparer
     {
-        [EnumAlias("eq", "=", "==", "等于")]
+        [EnumAlias("eq", "equals", "=", "==", "等于")]
         Equal,
         [EnumAlias("ne", "neq", "!=", "不等于")]
-        NotEqual,
+        Unequal,
         [EnumAlias("g", "gt", ">", "大于")]
         Greater,
         [EnumAlias("ge", ">=", "大于等于")]

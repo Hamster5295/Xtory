@@ -97,7 +97,7 @@ namespace Xtory
                                 if (tag.Length > 0)
                                     if (!tagMap.TryAdd(tag, insts.Count))
                                         diags.Add(new(currentLine, 2, $"标签 {tag} 已存在，请检查标签一列！"));
-                                
+
 
                                 // 第四列，指令
                                 if (TryParseInstruction(modeTxt, args[3..], out var inst, out var mode, out var diagnosis))

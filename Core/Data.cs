@@ -23,6 +23,7 @@ namespace Xtory
 
         public static DataType CastString(string obj, out object result)
         {
+            obj = obj.Trim();
             if (trueStr.Contains(obj.ToLower())) { result = true; return DataType.Bool; }
             else if (falseStr.Contains(obj.ToLower())) { result = false; return DataType.Bool; }
             else if (int.TryParse(obj, out var intVal)) { result = intVal; return DataType.Int; }

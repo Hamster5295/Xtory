@@ -7,8 +7,8 @@ namespace Xtory.Instructions
 
         public Menu(Arguments args) : base(args)
         {
-            tag = args.Str();
             content = args.Str();
+            tag = args.Str();
         }
 
         public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
