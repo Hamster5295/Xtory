@@ -4,45 +4,16 @@ namespace Xtory
 {
     public interface IDataProvider
     {
-        int GetInt(string key);
-        float GetFloat(string key);
-        bool GetBool(string key);
-        string GetStr(string key);
-
-        object Get(string key);
-        void Set(string key, object value);
+        string Get(string key);
+        void Set(string key, string value);
 
         string Format(string raw);
     }
 
     public abstract class DataProvider : IDataProvider
     {
-        public abstract object Get(string key);
-        public abstract void Set(string key, object value);
-
-        public int GetInt(string key)
-        {
-            var val = Get(key);
-            if (val is not int i) throw new InvalidCastException($"尝试将变量 {key} 读取为整数, 但其为 {val.GetType()}，当前值为 {val}");
-            return i;
-        }
-
-        public float GetFloat(string key)
-        {
-            var val = Get(key);
-            if (val is float f) return f;
-            if (val is int i) return i;
-            throw new InvalidCastException($"尝试将变量 {key} 读取为浮点数, 但其为 {val.GetType()}，当前值为 {val}");
-        }
-
-        public bool GetBool(string key)
-        {
-            var val = Get(key);
-            if (val is bool b) return b;
-            throw new InvalidCastException($"尝试将变量 {key} 读取为布尔值, 但其为 {val.GetType()}，当前值为 {val}");
-        }
-
-        public string GetStr(string key) => Get(key).ToString();
+        public abstract string Get(string key);
+        public abstract void Set(string key, string value);
 
         public string Format(string raw)
         {
@@ -76,7 +47,7 @@ namespace Xtory
                         if (c == '}')
                         {
                             state = FormatState.Idle;
-                            builder.Append(GetStr(arg.ToString()));
+                            builder.Append(Get(arg.ToString()));
                         }
                         else arg.Append(c);
                         break;

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Xtory
 {
-    internal static class Parser
+    public static class Parser
     {
         private static readonly Dictionary<string, Type> instMap;
         private static readonly Dictionary<string, ExecuteMode> modeMap;
@@ -47,7 +47,7 @@ namespace Xtory
             }
         }
 
-        internal static void Parse(string text, out List<(Instruction, ExecuteMode)> insts, out Dictionary<string, int> tagMap, out List<Diagnosis> diags)
+        public static void Parse(string text, out List<(Instruction, ExecuteMode)> insts, out Dictionary<string, int> tagMap, out List<Diagnosis> diags)
         {
             insts = new();
             tagMap = new();
@@ -180,7 +180,7 @@ namespace Xtory
     }
 
 
-    internal struct Diagnosis
+    public struct Diagnosis
     {
         internal int line, column;
         internal string message;

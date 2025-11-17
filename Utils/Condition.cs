@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics;
 
 namespace Xtory
 {
     public readonly struct Condition
     {
         private readonly string opA, opB;
-        private readonly bool isVarA, isVarB;
+        private readonly bool isVarA = false, isVarB = false;
         private readonly Comparer cmp;
 
         public Condition(string a, Comparer cmp, string b)
@@ -13,65 +14,35 @@ namespace Xtory
             this.cmp = cmp;
 
             var at = a.Trim();
-            if (at.StartsWith("${") && at.EndsWith("}"))
-            {
-                opA = at[2..^1];
-                isVarA = true;
-            }
-            else
-            {
-                opA = a;
-                isVarA = false;
-            }
+            if (at.StartsWith("${") && at.EndsWith("}")) { opA = at[2..^1]; isVarA = true; }
+            else opA = a;
 
             var bt = b.Trim();
-            if (bt.StartsWith("${") && bt.EndsWith("}"))
-            {
-                opB = at[2..^1];
-                isVarB = true;
-            }
-            else
-            {
-                opB = b;
-                isVarB = false;
-            }
+            if (bt.StartsWith("${") && bt.EndsWith("}")) { opB = at[2..^1]; isVarB = true; }
+            else opB = b;
         }
 
         public bool Eval(IDataProvider data)
         {
-            DataType ta, tb;
-            object a, b;
+            var isDigitA = float.TryParse(isVarA ? data.Get(opA) : opA, out var digitA);
+            var isDigitB = float.TryParse(isVarB ? data.Get(opB) : opB, out var digitB);
 
-            if (isVarA)
+            switch (cmp)
             {
-                a = data.Get(opA);
-                ta = DataUtils.GetObjectType(a);
+                case Comparer.Equal: return opA == opB;
+                case Comparer.Unequal: return opA != opB;
             }
-            else ta = DataUtils.CastString(opA, out a);
 
-            if (isVarB)
-            {
-                b = data.Get(opB);
-                tb = DataUtils.GetObjectType(b);
-            }
-            else tb = DataUtils.CastString(opB, out b);
-
-            if (ta == DataType.Other) throw new InvalidCastException($"变量 {opA} 的类型为 {ta}，应为 Int, Float, Bool, String 中的一个");
-            if (tb == DataType.Other) throw new InvalidCastException($"变量 {opB} 的类型为 {tb}，应为 Int, Float, Bool, String 中的一个");
-
-            if (!DataUtils.GetCompareType(ta, tb, out var t)) throw new InvalidOperationException($"无法将类型为 {ta} 的变量 {opA} 与 类型为 {tb} 的变量 {opB} 进行比较");
-            if (cmp != Comparer.Equal && cmp != Comparer.Unequal && t != DataType.Int && t != DataType.Float)
-                throw new InvalidOperationException($"类型为 {t} 的比较式的变量无法比较大小，仅能判断等于/不等于");
+            if (!isDigitA) throw new InvalidCastException($"左侧比较数 {opA} 不是数字，无法比较大小！");
+            if (!isDigitB) throw new InvalidCastException($"右侧比较数 {opB} 不是数字，无法比较大小！");
 
             return cmp switch
             {
-                Comparer.Equal => a.Equals(b),
-                Comparer.Unequal => !a.Equals(b),
-                Comparer.Less => (a as IComparable).CompareTo(b) < 0,
-                Comparer.LessEqual => (a as IComparable).CompareTo(b) <= 0,
-                Comparer.Greater => (a as IComparable).CompareTo(b) > 0,
-                Comparer.GreaterEqual => (a as IComparable).CompareTo(b) >= 0,
-                _ => throw new InvalidOperationException($"未知的关系符号 {cmp}"),
+                Comparer.Greater => digitA > digitB,
+                Comparer.GreaterEqual => digitA >= digitB,
+                Comparer.Less => digitA < digitB,
+                Comparer.LessEqual => digitA <= digitB,
+                _ => throw new UnreachableException("前侧 switch 已经全部判断完毕，不可能执行此处代码"),
             };
         }
     }

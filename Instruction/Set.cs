@@ -13,8 +13,7 @@ namespace Xtory.Instructions
 
         public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
         {
-            DataUtils.CastString(value, out var result);
-            data.Set(key, result);
+            data.Set(key, value);
             handle.Complete();
         }
     }
