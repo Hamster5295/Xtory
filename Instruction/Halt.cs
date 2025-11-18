@@ -5,7 +5,7 @@ namespace Xtory.Instructions
     {
         public Halt(Arguments args) : base(args) { }
 
-        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IInterfaceProvider dialog, IDataProvider data)
         {
             handle.Halt();
         }

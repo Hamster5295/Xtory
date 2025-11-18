@@ -2,7 +2,7 @@ using System;
 
 namespace Xtory
 {
-    public interface IDialogProvider
+    public interface IInterfaceProvider
     {
         void ShowCharacter(string character, Action<string> callback = null);
         void ShowText(string content, Action<string> callback = null);

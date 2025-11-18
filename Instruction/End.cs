@@ -10,7 +10,7 @@ namespace Xtory.Instructions
             ret = args.StrOrEmpty();
         }
 
-        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IInterfaceProvider dialog, IDataProvider data)
         {
             handle.Stop(ret);
         }

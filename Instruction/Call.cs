@@ -10,7 +10,7 @@ namespace Xtory.Instructions
             location = args.Str();
         }
 
-        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IInterfaceProvider dialog, IDataProvider data)
         {
             handle.Call(location);
             handle.Complete();

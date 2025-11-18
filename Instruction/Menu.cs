@@ -11,7 +11,7 @@ namespace Xtory.Instructions
             tag = args.Str();
         }
 
-        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IInterfaceProvider dialog, IDataProvider data)
         {
             dialog.ShowMenu(data.Format(content), s =>
                 {

@@ -9,7 +9,7 @@ namespace Xtory
 
         public bool Running { get; set; } = false;
 
-        private readonly IDialogProvider dialog;
+        private readonly IInterfaceProvider dialog;
         private readonly IDataProvider data;
 
         private Story story;
@@ -20,7 +20,7 @@ namespace Xtory
         private bool blocked = false;
         private readonly Stack<(Story, int)> callbackStack;
 
-        public XtoryRunner(IDialogProvider dialog, IDataProvider data)
+        public XtoryRunner(IInterfaceProvider dialog, IDataProvider data)
         {
             this.dialog = dialog;
             this.data = data;

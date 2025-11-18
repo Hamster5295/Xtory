@@ -32,7 +32,7 @@ namespace Xtory.Instructions
             } while (true);
         }
 
-        public override void Execute(XtoryRunner.Handle handle, IDialogProvider dialog, IDataProvider data)
+        public override void Execute(XtoryRunner.Handle handle, IInterfaceProvider dialog, IDataProvider data)
         {
             var cond = false;
             foreach (var orBlock in conditions)
